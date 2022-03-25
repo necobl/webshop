@@ -20,140 +20,139 @@ function loadItemsTable() {
         if (this.readyState == 4 && this.status == 200) {
 
             let obj = JSON.parse(this.responseText)
-            /*  let productsEL = document.getElementById("products");
-              let addCard = "";
-              let objLength = obj.length;
-            */
-            function Pagination() {
+           
+            class Pagination {
+                constructor() {
 
-                let prevButton = document.getElementById('button_prev');
-                let nextButton = document.getElementById('button_next');
+                    let prevButton = document.getElementById('button_prev');
+                    let nextButton = document.getElementById('button_next');
 
-                let current_page = 1;
-                let records_per_page = 5;
-                this.init = function () {
-                    changePage(1);
-                    pageNumbers();
-                    selectedPage();
-                    clickPage();
-                    addEventListeners();
-                };
+                    let current_page = 1;
+                    let records_per_page = 5;
+                    this.init = function () {
+                        changePage(1);
+                        pageNumbers();
+                        selectedPage();
+                        clickPage();
+                        addEventListeners();
+                    };
 
-                let addEventListeners = function () {
-                    prevButton.addEventListener('click', prevPage);
-                    nextButton.addEventListener('click', nextPage);
-                };
+                    let addEventListeners = function () {
+                        prevButton.addEventListener('click', prevPage);
+                        nextButton.addEventListener('click', nextPage);
+                    };
 
-                let selectedPage = function () {
-                    let page_number = document.getElementById('page_number').getElementsByClassName('clickPageNumber');
-                    for (let i = 0; i < page_number.length; i++) {
-                        if (i == current_page - 1) {
-                            page_number[i].classList.add("active");
+                    let selectedPage = function () {
+                        let page_number = document.getElementById('page_number').getElementsByClassName('clickPageNumber');
+                        for (let i = 0; i < page_number.length; i++) {
+                            if (i == current_page - 1) {
+                                page_number[i].classList.add("active");
+                            }
+                            else {
+                                page_number[i].classList.remove("active");;
+                            }
                         }
-                        else {
-                            page_number[i].classList.remove("active");;
+                    };
+
+                    let showPageNumberOf = function () {
+                        let showingItems = document.getElementById("showing_items");
+                        let items_per_page = records_per_page - 1;
+                        let firstNumberInfo = records_per_page * current_page;
+                        let firstNumberInfoTotal = firstNumberInfo - items_per_page;
+                        current_page == 1 ? showingItems.innerText = "Prikazano " + current_page + " do " + records_per_page * current_page + " od ukupno " + obj.length + " proizvoda" : showingItems.innerText = "Prikazano " + firstNumberInfoTotal + " - " + records_per_page * current_page + " od " + obj.length + " proizvoda";
+                    };
+
+                    let changePage = function (page) {
+                        const listingTable = document.getElementById('products');
+
+                        if (page < 1) {
+                            page = 1;
                         }
-                    }
-                };
+                        if (page > (numPages() - 1)) {
+                            page = numPages();
+                        }
 
-                let showPageNumberOf = function () {
-                    let showingItems = document.getElementById("showing_items");
-                    let items_per_page = records_per_page - 1
-                    let firstNumberInfo = records_per_page * current_page;
-                    let firstNumberInfoTotal = firstNumberInfo - items_per_page;
-                    current_page == 1 ? showingItems.innerText = "Prikazano " + current_page + " do " + records_per_page * current_page + " od ukupno " + obj.length + " proizvoda" : showingItems.innerText = "Prikazano " + firstNumberInfoTotal + " - " + records_per_page * current_page + " od " + obj.length + " proizvoda";
-                }
+                        listingTable.innerHTML = "";
 
-                let changePage = function (page) {
-                    const listingTable = document.getElementById('products');
+                        for (var i = (page - 1) * records_per_page; i < (page * records_per_page) && i < obj.length; i++) {
+                            listingTable.innerHTML += "<div class='col-12 p-card line-content' data-id='" + i + "'>" +
+                                "<div class='row'>" +
+                                "<div class='col-sm-5 col-md-4'>" +
+                                "<div class='position-relative h-sm-100'><a class='d-block h-100'><img class='img-fluid fit-cover w-sm-100 h-sm-100 rounded-1 absolute-sm-centered' src='" + obj[i].p_avatar + "' alt='Slika proizvoda'></a>" +
+                                "<div class='badge rounded-pill bg-success position-absolute top-0 end-0 me-2 mt-2 fs--2 z-index-2'>Novo</div>" +
+                                "</div>" +
+                                " </div>" +
+                                "<div class='col-sm-7 col-md-8'>" +
+                                "<div class='row h-100'>" +
+                                "<div class='col-lg-8'>" +
+                                "<h5 class='mt-3 mt-sm-0'><a class='text-dark fs-0 fs-lg-1' href=''>" + obj[i].p_name + "s</a></h5>" +
+                                "<p class='fs--1 mb-2 mb-md-3'><a class='text-500' href=''>" + obj[i].p_category + "</a></p>" +
+                                "<p class='fs--1 mb-2 mb-md-3'> " + obj[i].p_description + "</p>" +
+                                "<ul class='d-none d-lg-block'>" +
+                                "<li><span>" + obj[i].p_spec + "</span></li>" +
+                                "<li><span>" + obj[i].p_spec + "</span></li>" +
+                                "<li><span>" + obj[i].p_spec + "</span></li>" +
+                                "</ul>" +
+                                "</div>" +
+                                "<div class='col-lg-4 d-flex justify-content-between flex-column'>" +
+                                "<div><h4 class='fs-1 fs-md-2 text-warning mb-0'>$" + obj[i].p_price + "</h4></div>" +
+                                "<div class='mt-2'><button  onclick='addToCart(this)' data-id='" + obj[i].id + "'class='btn btn-sm btn-primary  mt-lg-2'><span class='ms-2'><i class='bi bi-cart-plus'></i> Dodaj u korpu</span></button>  <button onclick='seeMore(this)' class='btn btn-info btn-sm mt-lg-2' data-bs-toggle='modal' data-bs-target='#see_more_modal' data-id='" + obj[i].id + "' >Saznaj više</button></div>" +
+                                "</div>" +
+                                "</div>" +
+                                "</div>" +
+                                "</div>" +
+                                "</div>" +
+                                "<hr>";
+                        }
+                        showPageNumberOf();
+                        selectedPage();
+                    };
 
-                    if (page < 1) {
-                        page = 1;
-                    }
-                    if (page > (numPages() - 1)) {
-                        page = numPages();
-                    }
-
-                    listingTable.innerHTML = "";
-
-                    for (var i = (page - 1) * records_per_page; i < (page * records_per_page) && i < obj.length; i++) {
-                        listingTable.innerHTML += "<div class='col-12 p-card line-content' data-id='" + i + "'>" +
-                            "<div class='row'>" +
-                            "<div class='col-sm-5 col-md-4'>" +
-                            "<div class='position-relative h-sm-100'><a class='d-block h-100'><img class='img-fluid fit-cover w-sm-100 h-sm-100 rounded-1 absolute-sm-centered' src='" + obj[i].p_avatar + "' alt='Slika proizvoda'></a>" +
-                            "<div class='badge rounded-pill bg-success position-absolute top-0 end-0 me-2 mt-2 fs--2 z-index-2'>Novo</div>" +
-                            "</div>" +
-                            " </div>" +
-                            "<div class='col-sm-7 col-md-8'>" +
-                            "<div class='row h-100'>" +
-                            "<div class='col-lg-8'>" +
-                            "<h5 class='mt-3 mt-sm-0'><a class='text-dark fs-0 fs-lg-1' href=''>" + obj[i].p_name + "s</a></h5>" +
-                            "<p class='fs--1 mb-2 mb-md-3'><a class='text-500' href=''>" + obj[i].p_category + "</a></p>" +
-                            "<p class='fs--1 mb-2 mb-md-3'> " + obj[i].p_description + "</p>" +
-                            "<ul class='d-none d-lg-block'>" +
-                            "<li><span>" + obj[i].p_spec + "</span></li>" +
-                            "<li><span>" + obj[i].p_spec + "</span></li>" +
-                            "<li><span>" + obj[i].p_spec + "</span></li>" +
-                            "</ul>" +
-                            "</div>" +
-                            "<div class='col-lg-4 d-flex justify-content-between flex-column'>" +
-                            "<div><h4 class='fs-1 fs-md-2 text-warning mb-0'>$" + obj[i].p_price + "</h4></div>" +
-                            "<div class='mt-2'><button  onclick='addToCart(this)' data-id='" + obj[i].id + "'class='btn btn-sm btn-primary  mt-lg-2'><span class='ms-2'><i class='bi bi-cart-plus'></i> Dodaj u korpu</span></button>  <button onclick='seeMore(this)' class='btn btn-info btn-sm mt-lg-2' data-bs-toggle='modal' data-bs-target='#see_more_modal' data-id='" + obj[i].id + "' >Saznaj više</button></div>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>" +
-                            "<hr>";
-                    }
-                    showPageNumberOf();
-                    selectedPage();
-                };
-
-                let prevPage = function () {
-                    if (current_page > 1) {
-                        current_page--;
-                        changePage(current_page);
-                        window.scrollTo(0, 0);
-
-                    }
-                };
-
-                let nextPage = function () {
-                    if (current_page < numPages()) {
-                        current_page++;
-                        changePage(current_page);
-                        window.scrollTo(0, 0);
-
-                    }
-                };
-
-                let clickPage = function () {
-                    document.addEventListener('click', function (e) {
-                        if (e.target.nodeName == "BUTTON" && e.target.classList.contains("clickPageNumber")) {
-                            current_page = e.target.textContent;
+                    let prevPage = function () {
+                        if (current_page > 1) {
+                            current_page--;
                             changePage(current_page);
                             window.scrollTo(0, 0);
 
                         }
-                    });
-                };
+                    };
 
-                let numPages = function () {
-                    return Math.ceil(obj.length / records_per_page);
-                };
-                let pageNumbers = function () {
-                    let pageNumber = document.getElementById('page_number');
-                    pageNumber.innerHTML = "";
+                    let nextPage = function () {
+                        if (current_page < numPages()) {
+                            current_page++;
+                            changePage(current_page);
+                            window.scrollTo(0, 0);
 
-                    for (let i = 1; i < numPages() + 1; i++) {
-                        pageNumber.innerHTML += "<button type='button' class='btn btn-outline-primary clickPageNumber'>" + i + "</button>";
+                        }
+                    };
 
-                    }
-                };
+                    let clickPage = function () {
+                        document.addEventListener('click', function (e) {
+                            if (e.target.nodeName == "BUTTON" && e.target.classList.contains("clickPageNumber")) {
+                                current_page = e.target.textContent;
+                                changePage(current_page);
+                                window.scrollTo(0, 0);
+
+                            }
+                        });
+                    };
+
+                    let numPages = function () {
+                        return Math.ceil(obj.length / records_per_page);
+                    };
+                    let pageNumbers = function () {
+                        let pageNumber = document.getElementById('page_number');
+                        pageNumber.innerHTML = "";
+
+                        for (let i = 1; i < numPages() + 1; i++) {
+                            pageNumber.innerHTML += "<button type='button' class='btn btn-outline-primary clickPageNumber'>" + i + "</button>";
+
+                        }
+                    };
 
 
 
+                }
             }
 
             let pagination = new Pagination();
@@ -178,142 +177,144 @@ function loadItemsCol() {
               let addCard = "";
               let objLength = obj.length;
             */
-            function Pagination() {
+            class Pagination {
+                constructor() {
 
-                let prevButton = document.getElementById('button_prev');
-                let nextButton = document.getElementById('button_next');
+                    let prevButton = document.getElementById('button_prev');
+                    let nextButton = document.getElementById('button_next');
 
-                let current_page = 1;
-                let records_per_page = 6;
-                this.init = function () {
-                    changePage(1);
-                    pageNumbers();
-                    selectedPage();
-                    clickPage();
-                    addEventListeners();
-                };
+                    let current_page = 1;
+                    let records_per_page = 6;
+                    this.init = function () {
+                        changePage(1);
+                        pageNumbers();
+                        selectedPage();
+                        clickPage();
+                        addEventListeners();
+                    };
 
-                let addEventListeners = function () {
-                    prevButton.addEventListener('click', prevPage);
-                    nextButton.addEventListener('click', nextPage);
-                };
+                    let addEventListeners = function () {
+                        prevButton.addEventListener('click', prevPage);
+                        nextButton.addEventListener('click', nextPage);
+                    };
 
-                let selectedPage = function () {
-                    let page_number = document.getElementById('page_number').getElementsByClassName('clickPageNumber');
-                    for (let i = 0; i < page_number.length; i++) {
-                        if (i == current_page - 1) {
-                            page_number[i].classList.add("active");
+                    let selectedPage = function () {
+                        let page_number = document.getElementById('page_number').getElementsByClassName('clickPageNumber');
+                        for (let i = 0; i < page_number.length; i++) {
+                            if (i == current_page - 1) {
+                                page_number[i].classList.add("active");
+                            }
+                            else {
+                                page_number[i].classList.remove("active");;
+                            }
                         }
-                        else {
-                            page_number[i].classList.remove("active");;
+                    };
+
+                    let showPageNumberOf = function () {
+                        var showingItems = document.getElementById("showing_items");
+                        var items_per_page = records_per_page - 1;
+                        var firstNumberInfo = records_per_page * current_page;
+                        var firstNumberInfoTotal = firstNumberInfo - items_per_page;
+                        current_page == 1 ? showingItems.innerText = "Prikazano " + current_page + " do " + records_per_page * current_page + " od ukupno " + obj.length + " proizvoda" : showingItems.innerText = "Prikazano " + firstNumberInfoTotal + " - " + records_per_page * current_page + " od " + obj.length + " proizvoda";
+                    };
+
+                    let changePage = function (page) {
+                        const listingTable = document.getElementById('products');
+
+                        if (page < 1) {
+                            page = 1;
                         }
-                    }
-                };
+                        if (page > (numPages() - 1)) {
+                            page = numPages();
+                        }
 
-                let showPageNumberOf = function () {
-                    var showingItems = document.getElementById("showing_items");
-                    var items_per_page = records_per_page - 1
-                    var firstNumberInfo = records_per_page * current_page;
-                    var firstNumberInfoTotal = firstNumberInfo - items_per_page;
-                    current_page == 1 ? showingItems.innerText = "Prikazano " + current_page + " do " + records_per_page * current_page + " od ukupno " + obj.length + " proizvoda" : showingItems.innerText = "Prikazano " + firstNumberInfoTotal + " - " + records_per_page * current_page + " od " + obj.length + " proizvoda";
-                }
+                        listingTable.innerHTML = "";
 
-                let changePage = function (page) {
-                    const listingTable = document.getElementById('products');
+                        for (var i = (page - 1) * records_per_page; i < (page * records_per_page) && i < obj.length; i++) {
+                            /* listingTable.innerHTML += "<div class='col-12 p-card line-content' data-id='" + i + "'>" +
+                                 "<div class='row'>" +
+                                 "<div class='col-sm-5 col-md-4'>" +
+                                 "<div class='position-relative h-sm-100'><a class='d-block h-100' href=''><img class='img-fluid fit-cover w-sm-100 h-sm-100 rounded-1 absolute-sm-centered' src='" + obj[i].p_avatar + "' alt='Slika proizvoda'></a>" +
+                                 "<div class='badge rounded-pill bg-success position-absolute top-0 end-0 me-2 mt-2 fs--2 z-index-2'>Novo</div>" +
+                                 "</div>" +
+                                 " </div>" +
+                                 "<div class='col-sm-7 col-md-8'>" +
+                                 "<div class='row h-100'>" +
+                                 "<div class='col-lg-8'>" +
+                                 "<h5 class='mt-3 mt-sm-0'><a class='text-dark fs-0 fs-lg-1' href=''>" + obj[i].p_name + "s</a></h5>" +
+                                 "<p class='fs--1 mb-2 mb-md-3'><a class='text-500' href=''>" + obj[i].p_category + "</a></p>" +
+                                 "<p class='fs--1 mb-2 mb-md-3'> " + obj[i].p_description + "</p>" +
+                                 "<ul class='d-none d-lg-block'>" +
+                                 "<li><span>" + obj[i].p_spec + "</span></li>" +
+                                 "<li><span>" + obj[i].p_spec + "</span></li>" +
+                                 "<li><span>" + obj[i].p_spec + "</span></li>" +
+                                 "</ul>" +
+                                 "</div>" +
+                                 "<div class='col-lg-4 d-flex justify-content-between flex-column'>" +
+                                 "<div><h4 class='fs-1 fs-md-2 text-warning mb-0'>$" + obj[i].p_price + "</h4></div>" +
+                                 "<div class='mt-2'><button  onclick='addToCart(this)' data-id='" + obj[i].id + "'class='btn btn-sm btn-primary  mt-lg-2'><span class='ms-2'><i class='bi bi-cart-plus'></i> Dodaj u korpu</span></button>  <button onclick='seeMore(this)' class='btn btn-info btn-sm mt-lg-2' data-bs-toggle='modal' data-bs-target='#see_more_modal' data-id='" + obj[i].id + "' >Saznaj više</button>                  </div>" +
+                                 "</div>" +
+                                 "</div>" +
+                                 "</div>" +
+                                 "</div>" +
+                                 "</div>" +
+                                 "<hr>";*/
+                            listingTable.innerHTML += "<div class='col-md-4 p-3'>" +
+                                "<div class='card'>" +
+                                "<img src='" + obj[i].p_avatar + "' alt='Slika proizvoda'>" +
+                                "<div class='card-body'>" +
+                                "<h5 class='card-title'>" + obj[i].p_name + "</h5>" +
+                                "<p class='card-text'>$" + obj[i].p_price + "</p>" +
+                                "<button  onclick='addToCart(this)' data-id='" + obj[i].id + "'class='btn btn-sm btn-primary  mt-lg-2'><span class='ms-2'><i class='bi bi-cart-plus'></i> Dodaj u korpu</span></button>" +
+                                "</div>" +
+                                "</div>" +
+                                "</div>";
 
-                    if (page < 1) {
-                        page = 1;
-                    }
-                    if (page > (numPages() - 1)) {
-                        page = numPages();
-                    }
+                        }
+                        showPageNumberOf();
+                        selectedPage();
+                    };
 
-                    listingTable.innerHTML = "";
-
-                    for (var i = (page - 1) * records_per_page; i < (page * records_per_page) && i < obj.length; i++) {
-                        /* listingTable.innerHTML += "<div class='col-12 p-card line-content' data-id='" + i + "'>" +
-                             "<div class='row'>" +
-                             "<div class='col-sm-5 col-md-4'>" +
-                             "<div class='position-relative h-sm-100'><a class='d-block h-100' href=''><img class='img-fluid fit-cover w-sm-100 h-sm-100 rounded-1 absolute-sm-centered' src='" + obj[i].p_avatar + "' alt='Slika proizvoda'></a>" +
-                             "<div class='badge rounded-pill bg-success position-absolute top-0 end-0 me-2 mt-2 fs--2 z-index-2'>Novo</div>" +
-                             "</div>" +
-                             " </div>" +
-                             "<div class='col-sm-7 col-md-8'>" +
-                             "<div class='row h-100'>" +
-                             "<div class='col-lg-8'>" +
-                             "<h5 class='mt-3 mt-sm-0'><a class='text-dark fs-0 fs-lg-1' href=''>" + obj[i].p_name + "s</a></h5>" +
-                             "<p class='fs--1 mb-2 mb-md-3'><a class='text-500' href=''>" + obj[i].p_category + "</a></p>" +
-                             "<p class='fs--1 mb-2 mb-md-3'> " + obj[i].p_description + "</p>" +
-                             "<ul class='d-none d-lg-block'>" +
-                             "<li><span>" + obj[i].p_spec + "</span></li>" +
-                             "<li><span>" + obj[i].p_spec + "</span></li>" +
-                             "<li><span>" + obj[i].p_spec + "</span></li>" +
-                             "</ul>" +
-                             "</div>" +
-                             "<div class='col-lg-4 d-flex justify-content-between flex-column'>" +
-                             "<div><h4 class='fs-1 fs-md-2 text-warning mb-0'>$" + obj[i].p_price + "</h4></div>" +
-                             "<div class='mt-2'><button  onclick='addToCart(this)' data-id='" + obj[i].id + "'class='btn btn-sm btn-primary  mt-lg-2'><span class='ms-2'><i class='bi bi-cart-plus'></i> Dodaj u korpu</span></button>  <button onclick='seeMore(this)' class='btn btn-info btn-sm mt-lg-2' data-bs-toggle='modal' data-bs-target='#see_more_modal' data-id='" + obj[i].id + "' >Saznaj više</button>                  </div>" +
-                             "</div>" +
-                             "</div>" +
-                             "</div>" +
-                             "</div>" +
-                             "</div>" +
-                             "<hr>";*/
-                        listingTable.innerHTML += "<div class='col-md-4 p-3'>" +
-                            "<div class='card'>" +
-                            "<img src='" + obj[i].p_avatar + "' alt='Slika proizvoda'>" +
-                            "<div class='card-body'>" +
-                            "<h5 class='card-title'>" + obj[i].p_name + "</h5>" +
-                            "<p class='card-text'>$" + obj[i].p_price + "</p>" +
-                            "<button  onclick='addToCart(this)' data-id='" + obj[i].id + "'class='btn btn-sm btn-primary  mt-lg-2'><span class='ms-2'><i class='bi bi-cart-plus'></i> Dodaj u korpu</span></button>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>"
-
-                    }
-                    showPageNumberOf();
-                    selectedPage();
-                };
-
-                let prevPage = function () {
-                    if (current_page > 1) {
-                        current_page--;
-                        changePage(current_page);
-                    }
-                };
-
-                let nextPage = function () {
-                    if (current_page < numPages()) {
-                        current_page++;
-                        changePage(current_page);
-                    }
-                };
-
-                let clickPage = function () {
-                    document.addEventListener('click', function (e) {
-                        if (e.target.nodeName == "BUTTON" && e.target.classList.contains("clickPageNumber")) {
-                            current_page = e.target.textContent;
+                    let prevPage = function () {
+                        if (current_page > 1) {
+                            current_page--;
                             changePage(current_page);
-                            window.scrollTo(0, 0);
-
                         }
-                    });
-                };
-                let numPages = function () {
-                    return Math.ceil(obj.length / records_per_page);
-                };
+                    };
 
-                let pageNumbers = function () {
-                    let pageNumber = document.getElementById('page_number');
-                    pageNumber.innerHTML = "";
+                    let nextPage = function () {
+                        if (current_page < numPages()) {
+                            current_page++;
+                            changePage(current_page);
+                        }
+                    };
 
-                    for (let i = 1; i < numPages() + 1; i++) {
-                        pageNumber.innerHTML += "<button type='button' class='btn btn-outline-primary clickPageNumber'>" + i + "</button>";
-                    }
-                };
+                    let clickPage = function () {
+                        document.addEventListener('click', function (e) {
+                            if (e.target.nodeName == "BUTTON" && e.target.classList.contains("clickPageNumber")) {
+                                current_page = e.target.textContent;
+                                changePage(current_page);
+                                window.scrollTo(0, 0);
+
+                            }
+                        });
+                    };
+                    let numPages = function () {
+                        return Math.ceil(obj.length / records_per_page);
+                    };
+
+                    let pageNumbers = function () {
+                        let pageNumber = document.getElementById('page_number');
+                        pageNumber.innerHTML = "";
+
+                        for (let i = 1; i < numPages() + 1; i++) {
+                            pageNumber.innerHTML += "<button type='button' class='btn btn-outline-primary clickPageNumber'>" + i + "</button>";
+                        }
+                    };
 
 
 
+                }
             }
 
 
