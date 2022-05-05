@@ -41,7 +41,7 @@ function loadItemsTable() {
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
 
-            let obj = JSON.parse(this.responseText)
+            let obj = JSON.parse(this.responseText);
 
             class Pagination {
                 constructor() {
@@ -71,7 +71,7 @@ function loadItemsTable() {
                                 page_number[i].classList.add("active");
                             }
                             else {
-                                page_number[i].classList.remove("active");;
+                                page_number[i].classList.remove("active");
                             }
                         }
                     };
@@ -123,7 +123,7 @@ function loadItemsTable() {
                                 </div>
                                 <div class='col-lg-4 d-flex justify-content-between flex-column'>
                                 <div><h4 class='fs-1 fs-md-2 text-warning mb-0'>$ ${obj[i].p_price}</h4></div>
-                                <div class='mt-2 d-grid gap-2'><button onclick='addToCart(this)' data-id='${obj[i].id}' class='btn btn-sm btn-primary mt-lg-2 btn-add-to-cart'><span class='ms-2'><i class='bi bi-cart-plus'></i> Dodaj u korpu</span></button>  <button onclick='seeMore(this)' class='btn btn-info btn-sm mt-lg-2' data-bs-toggle='modal' data-bs-target='#see_more_modal' data-id='${obj[i].id}'>Saznaj više</button></div>
+                                <div class='mt-2 d-grid gap-2'><button  data-id='${obj[i].id}' class='btn btn-sm btn-primary mt-lg-2 btn-add-to-cart'><span class='ms-2'><i class='bi bi-cart-plus'></i> Dodaj u korpu</span></button>  <button onclick='seeMore(this)' class='btn btn-info btn-sm mt-lg-2' data-bs-toggle='modal' data-bs-target='#see_more_modal' data-id='${obj[i].id}'>Saznaj više</button></div>
                                 </div> 
                                 </div>
                                 </div> 
@@ -133,6 +133,12 @@ function loadItemsTable() {
                         }
                         showPageNumberOf();
                         selectedPage();
+
+                        const btnAddToChart = document.querySelectorAll('.btn-add-to-cart');
+
+                        btnAddToChart.forEach(e => {
+                            e.addEventListener('click', () => addToCart(e));
+                        });
                     };
 
 
@@ -259,7 +265,7 @@ function loadItemsCol() {
                                 <div class='card-body'>
                                 <h5 class='card-title'>${obj[i].p_name}</h5>
                                 <p class='card-text'>${obj[i].p_price}</p>
-                                <button  onclick='addToCart(this)' data-id='${obj[i].id}' class='btn btn-sm btn-primary  mt-lg-2'><span class='ms-2'><i class='bi bi-cart-plus'></i> Dodaj u korpu</span></button>
+                                <button data-id='${obj[i].id}' class='btn btn-sm btn-primary btn-add-to-cart  mt-lg-2'><span class='ms-2'><i class='bi bi-cart-plus'></i> Dodaj u korpu</span></button>
                                 </div> 
                                 </div> 
                                 </div>`;
@@ -267,6 +273,13 @@ function loadItemsCol() {
                         }
                         showPageNumberOf();
                         selectedPage();
+
+                        const btnAddToChart = document.querySelectorAll('.btn-add-to-cart');
+
+                        btnAddToChart.forEach(e => {
+                            e.addEventListener('click', () => addToCart(e));
+                        });
+
                     };
 
                     let prevPage = function () {
@@ -305,13 +318,8 @@ function loadItemsCol() {
                             pageNumber.innerHTML += `<button type='button' class='btn btn-outline-primary clickPageNumber'>${i}</button>`;
                         }
                     };
-
-
-
                 }
             }
-
-
 
             let pagination = new Pagination();
             pagination.init();
