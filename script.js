@@ -1,4 +1,21 @@
 loadItemsTable();
+/* nav */
+let allLink = document.querySelectorAll('.nav-link');
+let productsView = document.querySelector('#products_view');
+let addProductView = document.querySelector('#add_product_view');
+let cartView = document.querySelector('#cart_view');
+let views = document.querySelectorAll('.view');
+/* nav end */
+
+/* product input value */
+let nameInput = document.querySelector('#name_product');
+let descriptionInput = document.querySelector('#description_product');
+let materialInput = document.querySelector('#material_product');
+let categoryInput = document.querySelector('#category_product');
+let specificationInput = document.querySelector('#specification_product');
+let priceInput = document.querySelector('#price_product');
+/* product input value  end */
+
 let totalPrice = 0;
 let priceItem = 0;
 let itemAlreadyAdded = false;  /// items added in chart
@@ -7,13 +24,33 @@ let numberQuantity = 1; /// Quantity chart items value
 let totalSumItemPrice = 0;
 let quantityNumber = 1;
 const btnShowView = document.querySelectorAll('.btn-show-view');
-
+const btnAddProduct = document.querySelector('#nav_add_product_view');
+const saveBtn = document.querySelector('#save');
+const modalSucces = new bootstrap.Modal(document.querySelector('.success-modal'));
+const modalError = new bootstrap.Modal(document.querySelector('.error-modal'));
 checkEmptyCart();
 
 let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
 })
+
+for (let i = 0; i < allLink.length; i++) {
+    allLink[i].addEventListener('click', showViewProducts);
+
+}
+function showViewProducts(e) {
+
+    views.forEach(e => e.style.display = "none")
+    if (e instanceof Event) {
+        e.preventDefault();
+        let id = `#${this.getAttribute("href")}`;
+        document.querySelector(id).style.display = "block";
+    } else {
+        document.querySelector(e).style.display = "block";
+    }
+
+}
 
 for (let i = 0; i < btnShowView.length; i++) {
     btnShowView[i].addEventListener('click', showView);
@@ -24,6 +61,23 @@ function showView() {
     this.classList.add('active');
 }
 
+btnAddProduct.addEventListener('click', function (e) {
+    nameInput.value = "";
+    descriptionInput.value = "";
+    materialInput.value = "";
+    categoryInput.value = "";
+    specificationInput.value = "";
+    priceInput.value = "";
+
+    nameInput.classList.remove("is-invalid");
+    descriptionInput.classList.remove("is-invalid");
+    materialInput.classList.remove("is-invalid");
+    categoryInput.classList.remove("is-invalid");
+    specificationInput.classList.remove("is-invalid");
+    priceInput.classList.remove("is-invalid");
+
+})
+
 gridView();
 
 function gridView() {
@@ -33,6 +87,76 @@ function gridView() {
     btnTableGrid.addEventListener('click', loadItemsTable);
     btnColGrid.addEventListener('click', loadItemsCol);
 }
+
+saveBtn.addEventListener('click', function () {
+    let nameValue = nameInput.value.trim();
+    let descriptionValue = descriptionInput.value.trim();
+    let materialValue = materialInput.value.trim();
+    let categoryValue = categoryInput.value.trim();
+    let specificationValue = specificationInput.value.trim();
+    let priceValue = priceInput.value.trim();
+
+    let formValid = true;
+
+    const newAccount = {
+        p_name: nameValue,
+        p_avatar: 'http://placeimg.com/640/480/people',
+        p_description: descriptionValue,
+        p_price: priceValue,
+        p_material: materialValue,
+        p_category: categoryValue,
+        p_spec: specificationValue,
+
+    }
+
+    if (!nameValue.length) {
+        nameInput.classList.add("is-invalid");
+        formValid = false;
+    }
+    if (!descriptionValue.length) {
+        descriptionInput.classList.add("is-invalid");
+        formValid = false;
+    }
+    if (!materialValue.length) {
+        materialInput.classList.add("is-invalid");
+        formValid = false;
+    }
+    if (!categoryValue.length) {
+        categoryInput.classList.add("is-invalid");
+        formValid = false;
+    }
+    if (!specificationValue.length) {
+        specificationInput.classList.add("is-invalid");
+        formValid = false;
+    }
+    if (!priceValue.length) {
+        priceInput.classList.add("is-invalid");
+        formValid = false;
+    }
+    if (formValid) {
+
+        let xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "https://6183bc8b91d76c00172d1af0.mockapi.io/products/products", true);
+        xhttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
+        xhttp.send(JSON.stringify(newAccount));
+        xhttp.onload = function () {
+            if (xhttp.status === 201) {
+                loadItemsTable();
+                modalSucces.show();
+                setTimeout(function () { modalSucces.hide(); }, 2000);
+                showViewProducts("#products_view");
+
+            }
+            if (xhttp.status === 400 || this.status == 500) {
+                modalError.show();
+                setTimeout(function () { modalSucces.hide(); }, 2000);
+                showViewProducts("#products_view");
+            }
+        }
+    }
+
+})
+
 
 function loadItemsTable() {
 
@@ -85,7 +209,7 @@ function loadItemsTable() {
                         if (ofNumber > obj.length) {
                             ofNumber = obj.length
                         }
-                        current_page == 1 ? showingItems.innerText = "Prikazano " + current_page + " od " + ofNumber + " do " + obj.length + " prozivoda" : showingItems.innerText = "Prikazano " + firstNumberInfoTotal + " od " + ofNumber + " do " + obj.length + " proizvoda";
+                        current_page == 1 ? showingItems.innerText = "Showing " + current_page + " to " + ofNumber + " of " + obj.length + " products" : showingItems.innerText = "Showing " + firstNumberInfoTotal + " to " + ofNumber + " of " + obj.length + " products";
                     };
 
                     let changePage = function (page) {
@@ -104,12 +228,12 @@ function loadItemsTable() {
 
                             listingTable.innerHTML += `<div class='col-12 p-card line-content'>
                                 <div class='row'>
-                                <div class='col-sm-5 col-md-4'>
+                                <div class='col-sm-5 col-md-3'>
                                 <div class='position-relative h-sm-100'><a class='d-block h-100'><img class='img-fluid fit-cover w-sm-100 h-sm-100 rounded-1 absolute-sm-centered' src=${obj[i].p_avatar} alt='Slika proizvoda'></a>
                                 <div class='badge rounded-pill bg-success position-absolute top-0 end-0 me-2 mt-2 fs--2 z-index-2'>Novo</div>
                                 </div>
                                 </div>
-                                <div class='col-sm-7 col-md-8'>
+                                <div class='col-sm-7 col-md-9'>
                                 <div class='row h-100'>
                                 <div class='col-lg-8'>
                                 <h5 class='mt-3 mt-sm-0'><a class='text-dark fs-0 fs-lg-1' href=''>${obj[i].p_name}</a></h5>
@@ -123,7 +247,7 @@ function loadItemsTable() {
                                 </div>
                                 <div class='col-lg-4 d-flex justify-content-between flex-column'>
                                 <div><h4 class='fs-1 fs-md-2 text-warning mb-0'>$ ${obj[i].p_price}</h4></div>
-                                <div class='mt-2 d-grid gap-2'><button  data-id='${obj[i].id}' class='btn btn-sm btn-primary mt-lg-2 btn-add-to-cart'><span class='ms-2'><i class='bi bi-cart-plus'></i> Dodaj u korpu</span></button>  <button onclick='seeMore(this)' class='btn btn-info btn-sm mt-lg-2' data-bs-toggle='modal' data-bs-target='#see_more_modal' data-id='${obj[i].id}'>Saznaj više</button></div>
+                                <div class='mt-2 d-grid gap-2'><button  data-id='${obj[i].id}' class='btn btn-sm btn-primary mt-lg-2 btn-add-to-cart'><span class='ms-2'><i class='bi bi-cart-plus'></i> Add to cart</span></button>  <button onclick='seeMore(this)' class='btn btn-info btn-sm mt-lg-2' data-bs-toggle='modal' data-bs-target='#see_more_modal' data-id='${obj[i].id}'>View more</button></div>
                                 </div> 
                                 </div>
                                 </div> 
@@ -140,7 +264,6 @@ function loadItemsTable() {
                             e.addEventListener('click', () => addToCart(e));
                         });
                     };
-
 
                     let prevPage = function () {
                         if (current_page > 1) {
@@ -212,7 +335,7 @@ function loadItemsCol() {
                     let nextButton = document.getElementById('button_next');
 
                     let current_page = 1;
-                    let records_per_page = 6;
+                    let records_per_page = 8;
                     this.init = function () {
                         changePage(1);
                         pageNumbers();
@@ -243,7 +366,7 @@ function loadItemsCol() {
                         let items_per_page = records_per_page - 1;
                         let firstNumberInfo = records_per_page * current_page;
                         let firstNumberInfoTotal = firstNumberInfo - items_per_page;
-                        current_page == 1 ? showingItems.innerText = "Prikazano " + current_page + " do " + records_per_page * current_page + " od ukupno " + obj.length + " proizvoda" : showingItems.innerText = "Prikazano " + firstNumberInfoTotal + " - " + records_per_page * current_page + " od " + obj.length + " proizvoda";
+                        current_page == 1 ? showingItems.innerText = "Showing " + current_page + " to " + records_per_page * current_page + " of " + obj.length + " products" : showingItems.innerText = "Showing " + firstNumberInfoTotal + " to " + records_per_page * current_page + " of " + obj.length + " products";
                     };
 
                     let changePage = function (page) {
@@ -259,13 +382,13 @@ function loadItemsCol() {
                         listingTable.innerHTML = "";
 
                         for (let i = (page - 1) * records_per_page; i < (page * records_per_page) && i < obj.length; i++) {
-                            listingTable.innerHTML += `<div class='col-md-4 p-3'> 
+                            listingTable.innerHTML += `<div class='col-md-3 p-3'> 
                                 <div class='card'> 
                                 <img src='${obj[i].p_avatar}' alt='Slika proizvoda'> 
                                 <div class='card-body'>
                                 <h5 class='card-title'>${obj[i].p_name}</h5>
                                 <p class='card-text'>${obj[i].p_price}</p>
-                                <button data-id='${obj[i].id}' class='btn btn-sm btn-primary btn-add-to-cart  mt-lg-2'><span class='ms-2'><i class='bi bi-cart-plus'></i> Dodaj u korpu</span></button>
+                                <button data-id='${obj[i].id}' class='btn btn-sm btn-primary btn-add-to-cart  mt-lg-2'><span class='ms-2'><i class='bi bi-cart-plus'></i> Add to cart</span></button>
                                 </div> 
                                 </div> 
                                 </div>`;
@@ -359,16 +482,15 @@ function seeMore(el) {
 function addToCart(el) {
     let id = el.getAttribute("data-id");
 
-
     if (!itemAlreadyAdded) {
         document.getElementById("myCart").innerHTML = `<table class='table table-sm'>
             <thead>
             <tr>
-            <th><b>Naziv proizvoda:</b></th>
-            <th><b>Materijal:</b></th>
-            <th><b>Cijena:</b></th>
-            <th><b>Količina:</b></th>
-            <th><b>Ukupno:</b></th>
+            <th><b>Product name:</b></th>
+            <th><b>Material:</b></th>
+            <th><b>Price:</b></th>
+            <th><b>Quantity:</b></th>
+            <th><b>Total:</b></th>
             <th></th>
             </tr>
             </thead>
@@ -379,7 +501,7 @@ function addToCart(el) {
             <th></th>
             <th></th>
             <th></th>
-            <th style='width:200px;'><b>Ukupna cijena:</b> $ <span id='total_price'></span></th>
+            <th style='width:200px;'><b>Total price:</b> $ <span id='total_price'></span></th>
             <th></th> 
             </tfoot>
         </table>`
@@ -416,7 +538,6 @@ function addToCart(el) {
         }
     }
 
-
     xhttp.open("GET", "https://6183bc8b91d76c00172d1af0.mockapi.io/products/products/" + id, true);
     xhttp.send();
     checkEmptyCart();
@@ -433,7 +554,6 @@ function removeFromCart(el) {
     document.getElementById("cart_item_" + id).remove();
     document.getElementById("total_items").innerHTML = totalItems.length;
     checkEmptyCart();
-
 }
 
 function checkEmptyCart() {
@@ -457,7 +577,6 @@ function totalValueItem(el) {
     totalSumItemPrice = parseFloat(totalPriceItem.innerText);
 }
 
-
 function minusBtn(el) {
     let id = el.getAttribute("data-id");
     let numberQuantity = document.getElementById("number_quantity_" + id);
@@ -473,6 +592,7 @@ function minusBtn(el) {
     }
 
 }
+
 function plusBtn(el) {
     let id = el.getAttribute("data-id");
     let numberQuantity = document.getElementById("number_quantity_" + id);
@@ -485,6 +605,5 @@ function plusBtn(el) {
         totalValueItem(el);
         totalPrice = totalPrice + parseInt(el.getAttribute("data-p_price"));
         document.getElementById("total_price").innerText = totalPrice;
-
     }
 }
