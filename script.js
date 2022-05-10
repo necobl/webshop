@@ -33,12 +33,13 @@ checkEmptyCart();
 let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
-})
+});
 
 for (let i = 0; i < allLink.length; i++) {
     allLink[i].addEventListener('click', showViewProducts);
 
-}
+};
+
 function showViewProducts(e) {
 
     views.forEach(e => e.style.display = "none")
@@ -49,17 +50,16 @@ function showViewProducts(e) {
     } else {
         document.querySelector(e).style.display = "block";
     }
-
-}
+};
 
 for (let i = 0; i < btnShowView.length; i++) {
     btnShowView[i].addEventListener('click', showView);
-}
+};
 
 function showView() {
     btnShowView.forEach(e => e.classList.remove('active'));
     this.classList.add('active');
-}
+};
 
 btnAddProduct.addEventListener('click', function (e) {
     nameInput.value = "";
@@ -75,18 +75,16 @@ btnAddProduct.addEventListener('click', function (e) {
     categoryInput.classList.remove("is-invalid");
     specificationInput.classList.remove("is-invalid");
     priceInput.classList.remove("is-invalid");
-
-})
+});
 
 gridView();
 
 function gridView() {
     const btnTableGrid = document.querySelector('#table_grid');
     const btnColGrid = document.querySelector('#col_grid');
-
     btnTableGrid.addEventListener('click', loadItemsTable);
     btnColGrid.addEventListener('click', loadItemsCol);
-}
+};
 
 saveBtn.addEventListener('click', function () {
     let nameValue = nameInput.value.trim();
@@ -105,8 +103,7 @@ saveBtn.addEventListener('click', function () {
         p_price: priceValue,
         p_material: materialValue,
         p_category: categoryValue,
-        p_spec: specificationValue,
-
+        p_spec: specificationValue
     }
 
     if (!nameValue.length) {
@@ -145,7 +142,6 @@ saveBtn.addEventListener('click', function () {
                 modalSucces.show();
                 setTimeout(function () { modalSucces.hide(); }, 2000);
                 showViewProducts("#products_view");
-
             }
             if (xhttp.status === 400 || this.status == 500) {
                 modalError.show();
@@ -155,8 +151,7 @@ saveBtn.addEventListener('click', function () {
         }
     }
 
-})
-
+});
 
 function loadItemsTable() {
 
@@ -270,7 +265,6 @@ function loadItemsTable() {
                             current_page--;
                             changePage(current_page);
                             window.scrollTo(0, 0);
-
                         }
                     };
 
@@ -279,7 +273,6 @@ function loadItemsTable() {
                             current_page++;
                             changePage(current_page);
                             window.scrollTo(0, 0);
-
                         }
                     };
 
@@ -289,7 +282,6 @@ function loadItemsTable() {
                                 current_page = e.target.textContent;
                                 changePage(current_page);
                                 window.scrollTo(0, 0);
-
                             }
                         });
                     };
@@ -303,7 +295,6 @@ function loadItemsTable() {
 
                         for (let i = 1; i < numPages() + 1; i++) {
                             pageNumber.innerHTML += `<button type='button' class='btn btn-outline-primary clickPageNumber'>${i}</button>`;
-
                         }
                     };
                 }
@@ -425,7 +416,6 @@ function loadItemsCol() {
                                 current_page = e.target.textContent;
                                 changePage(current_page);
                                 window.scrollTo(0, 0);
-
                             }
                         });
                     };
@@ -468,7 +458,6 @@ function seeMore(el) {
                                         <p>${obj.p_description}</p> 
                                         <p><b> Materijal </b> ${obj.p_material}</p> 
                                         <p><b> Cijena </b>${obj.p_price}</p>`;
-            ;
         }
     }
 
@@ -476,8 +465,6 @@ function seeMore(el) {
     xhttp.send();
 
 }
-
-
 
 function addToCart(el) {
     let id = el.getAttribute("data-id");
@@ -533,7 +520,6 @@ function addToCart(el) {
                 totalSumItemPrice = parseFloat(document.getElementById("total_price_item_" + obj.id).innerText);
                 totalPrice += parseFloat(totalSumItemPrice);
                 document.getElementById("total_price").innerHTML = totalPrice;
-
             }
         }
     }
@@ -590,7 +576,6 @@ function minusBtn(el) {
         totalPrice = totalPrice - parseInt(el.getAttribute("data-p_price"));
         document.getElementById("total_price").innerText = totalPrice;
     }
-
 }
 
 function plusBtn(el) {
