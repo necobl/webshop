@@ -546,7 +546,7 @@ function checkEmptyCart() {
 
     let divCartMessage = document.getElementById("message_cart");
     if (!totalItems.length) {
-        divCartMessage.innerHTML += "<div class='alert alert-danger mt-3' role='alert'>Vaša korpa je prazna!</div>"
+        divCartMessage.innerHTML += "<div class='alert alert-danger mt-3' role='alert'>Your cart is empty!</div>"
         document.getElementById("myCart").innerHTML = "";
         itemAlreadyAdded = false;
     } else {
