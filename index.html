@@ -19,10 +19,6 @@
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="#">Web shop</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
@@ -32,12 +28,21 @@
                     <li class="nav-item">
                         <a class="nav-link" id="nav_add_product_view" href="add_product_view">Add product</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="nav_cart_view" href="cart_view"><i class="bi bi-cart"></i>
-                            Cart<kbd class="bg-danger ms-1" id="total_items">-</kbd></a>
-                    </li>
                 </ul>
             </div>
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#"><i class="bi bi-heart"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="nav_cart_view" href="cart_view"><i class="bi bi-cart"></i>
+                        <kbd class="bg-danger ms-1" id="total_items">-</kbd></a>
+                </li>
+            </ul>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
         </div>
     </nav>
 
@@ -48,6 +53,7 @@
 
     <div class="mt-2">
         <div class="container">
+
             <div class="row view" id="products_view">
                 <div class="mb-3">
                     <div class="row flex-between-center">
@@ -93,7 +99,9 @@
             </div>
             <div class="row view" id="cart_view">
                 <div class="col-md-12 mb-3">
-                    <div id="message_cart"></div>
+                    <div id="message_cart">
+                        <div class='alert alert-danger mt-3' role='alert'>Your cart is empty!</div>
+                    </div>
                     <div id="myCart" class="table-responsive"></div>
                 </div>
             </div>

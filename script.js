@@ -28,7 +28,6 @@ const btnAddProduct = document.querySelector('#nav_add_product_view');
 const saveBtn = document.querySelector('#save');
 const modalSucces = new bootstrap.Modal(document.querySelector('.success-modal'));
 const modalError = new bootstrap.Modal(document.querySelector('.error-modal'));
-checkEmptyCart();
 
 let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -226,6 +225,7 @@ function loadItemsTable() {
                                 <div class='col-sm-5 col-md-3'>
                                 <div class='position-relative h-sm-100'><a class='d-block h-100'><img class='img-fluid fit-cover w-sm-100 h-sm-100 rounded-1 absolute-sm-centered' src=${obj[i].p_avatar} alt='Slika proizvoda'></a>
                                 <div class='badge rounded-pill bg-success position-absolute top-0 end-0 me-2 mt-2 fs--2 z-index-2'>Novo</div>
+                                <div class='position-absolute bottom-0 end-0 me-2 mb-2 fs--2 z-index-2 text-white'><i class="bi bi-heart"></i></div>
                                 </div>
                                 </div>
                                 <div class='col-sm-7 col-md-9'>
@@ -242,7 +242,7 @@ function loadItemsTable() {
                                 </div>
                                 <div class='col-lg-4 d-flex justify-content-between flex-column'>
                                 <div><h4 class='fs-1 fs-md-2 text-warning mb-0'>$ ${obj[i].p_price}</h4></div>
-                                <div class='mt-2 d-grid gap-2'><button  data-id='${obj[i].id}' class='btn btn-sm btn-primary mt-lg-2 btn-add-to-cart'><span class='ms-2'><i class='bi bi-cart-plus'></i> Add to cart</span></button>  <button onclick='seeMore(this)' class='btn btn-info btn-sm mt-lg-2' data-bs-toggle='modal' data-bs-target='#see_more_modal' data-id='${obj[i].id}'>View more</button></div>
+                                <div class='mt-2 d-grid gap-2'><button id='btn_add_${obj[i].id}' data-id='${obj[i].id}' class='btn btn-sm btn-primary mt-lg-2 btn-add-to-cart'><span class='ms-2'><i class='bi bi-cart-plus'></i> Add to cart</span></button>  <button onclick='seeMore(this)' class='btn btn-info btn-sm mt-lg-2' data-bs-toggle='modal' data-bs-target='#see_more_modal' data-id='${obj[i].id}'>View more</button></div>
                                 </div> 
                                 </div>
                                 </div> 
@@ -379,7 +379,7 @@ function loadItemsCol() {
                                 <div class='card-body'>
                                 <h5 class='card-title'>${obj[i].p_name}</h5>
                                 <p class='card-text'>${obj[i].p_price}</p>
-                                <button data-id='${obj[i].id}' class='btn btn-sm btn-primary btn-add-to-cart  mt-lg-2'><span class='ms-2'><i class='bi bi-cart-plus'></i> Add to cart</span></button>
+                                <button id='btn_add_${obj[i].id}' data-id='${obj[i].id}' class='btn btn-sm btn-primary btn-add-to-cart  mt-lg-2'><span class='ms-2'><i class='bi bi-cart-plus'></i> Add to cart</span></button>
                                 </div> 
                                 </div> 
                                 </div>`;
@@ -433,10 +433,8 @@ function loadItemsCol() {
                     };
                 }
             }
-
             let pagination = new Pagination();
             pagination.init();
-
         }
     }
 
@@ -446,9 +444,7 @@ function loadItemsCol() {
 
 function seeMore(el) {
     let id = el.getAttribute("data-id");
-
     let xhttp = new XMLHttpRequest();
-
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
 
@@ -460,14 +456,13 @@ function seeMore(el) {
                                         <p><b> Cijena </b>${obj.p_price}</p>`;
         }
     }
-
     xhttp.open("GET", "https://6183bc8b91d76c00172d1af0.mockapi.io/products/products/" + id, true);
     xhttp.send();
-
 }
 
 function addToCart(el) {
     let id = el.getAttribute("data-id");
+    el.innerText = 'Item is added';
 
     if (!itemAlreadyAdded) {
         document.getElementById("myCart").innerHTML = `<table class='table table-sm'>
@@ -493,15 +488,18 @@ function addToCart(el) {
             </tfoot>
         </table>`
         itemAlreadyAdded = true;
-
     }
 
     let xhttp = new XMLHttpRequest();
-
     let exists = Object.values(totalItems).includes(id);
 
     if (exists == true) {
         document.getElementById(`plus_${id}`).click();
+        el.innerText = 'Quantity increased';
+        setTimeout(function () {
+            el.innerText = 'Item is added';
+        }, 3000);
+
     } else {
         totalItems.push(id);
         xhttp.onreadystatechange = function () {
@@ -523,7 +521,6 @@ function addToCart(el) {
             }
         }
     }
-
     xhttp.open("GET", "https://6183bc8b91d76c00172d1af0.mockapi.io/products/products/" + id, true);
     xhttp.send();
     checkEmptyCart();
@@ -539,6 +536,7 @@ function removeFromCart(el) {
     });
     document.getElementById("cart_item_" + id).remove();
     document.getElementById("total_items").innerHTML = totalItems.length;
+    document.getElementById("btn_add_" + id).innerHTML = "<span class='ms-2'><i class='bi bi-cart-plus'></i> Add to cart</span>"
     checkEmptyCart();
 }
 
@@ -549,6 +547,7 @@ function checkEmptyCart() {
         divCartMessage.innerHTML += "<div class='alert alert-danger mt-3' role='alert'>Your cart is empty!</div>"
         document.getElementById("myCart").innerHTML = "";
         itemAlreadyAdded = false;
+
     } else {
         divCartMessage.innerHTML = "";
     }
