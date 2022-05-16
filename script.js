@@ -36,7 +36,6 @@ let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 
 for (let i = 0; i < allLink.length; i++) {
     allLink[i].addEventListener('click', showViewProducts);
-
 };
 
 function showViewProducts(e) {
@@ -495,6 +494,10 @@ function addToCart(el) {
 
     if (exists == true) {
         document.getElementById(`plus_${id}`).click();
+        el.classList.add('disabled');
+        setTimeout(function () {
+            el.classList.remove('disabled');
+        }, 1000);
         el.innerText = 'Quantity increased';
         setTimeout(function () {
             el.innerText = 'Item is added';
